@@ -1,0 +1,105 @@
+<include file="./Admin/Tpl/Index/header.html"/>			
+
+<include file="./Admin/Tpl/Index/left.html"/>	
+
+
+	<div class="diywap_right">
+
+		<div class="well well-sm">添加礼品</div>
+
+
+<script>
+			$(function(){
+				$('#save').click(function(){
+					$('form[name="myForm"]').submit();
+				});
+			});
+		</script>
+<form class="form-horizontal" action='__APP__/Gift/doAdd' method="post" name="myForm" enctype='multipart/form-data'/>
+
+
+			<div class="form-group">
+
+			 <label for="catename" class="col-sm-2 control-label">礼品名称:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="text" name="gift_name"  class="form-control" >
+
+				 </div>
+
+			</div>
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">成绩下限:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="text" name="score_low"  class="form-control" >
+
+				 </div>
+
+			</div>
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">成绩上限:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="text" name="score_high"  class="form-control" >
+
+				 </div>
+
+			</div>
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">礼品数量:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="text" name="gift_num"  class="form-control" >
+
+				 </div>
+
+			</div>
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">中奖概率:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="text" name="chance_value"  class="form-control" >
+
+				 </div>
+
+			</div>
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">每天抽奖数:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="text" name="day_num"  class="form-control" >
+
+				 </div>
+
+			</div>
+			
+			
+			<button type="submit" class="btn btn-primary btn-lg" id="save">保 存</button>
+
+			</form>
+
+			</div>
+
+			</div>
+	</div>
+
+</body>
+
+</html>

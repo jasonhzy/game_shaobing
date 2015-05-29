@@ -1,0 +1,115 @@
+
+<load href="__PUBLIC__/Js/showdate.js"/>
+<include file="./Admin/Tpl/Index/header.html"/>			
+
+<include file="./Admin/Tpl/Index/left.html"/>	
+
+
+<script>
+				$(function(){
+				
+				//提交表单
+				$('img.search').click(function(){
+					$('form[name="searchScoreForm"]').submit();
+				});
+				
+				$('#exportData').click(function(){
+					
+					var startdate='blank';
+					var enddate='blank';
+					var username='blank';
+					var userphone='blank';
+					
+					if($("#startdate").val()!=''){
+						startdate =$("#startdate").val();
+					}
+					
+					if($("#enddate").val()!=''){
+						enddate =$("#enddate").val();
+					}
+					
+					if($("#username").val()!=''){
+						username =$("#username").val();
+					}
+					
+					if($("#userphone").val()!=''){
+						userphone =$("#userphone").val();
+					}
+
+					window.location.href = "__APP__/User/exportTopNData/startdate/"+startdate+"/enddate/"+enddate+"/username/"+ encodeURIComponent(username) +"/userphone/"+userphone;
+				});
+			});
+		</script>		
+	<div class="diywap_right">
+
+		<div class="well well-sm">用户排名统计</div>
+					
+					<form  name="searchScoreForm" action="__APP__/User/searchTopN"  method="get" >
+		<div>
+			开始时间:<input type="text" id="startdate" name="startdate" onclick="return Calendar('startdate');" value="<{$_GET['startdate']}>" class="text" style="width:85px;"/>
+			结束时间:<input type="text" id="enddate" onclick="return Calendar('enddate');" value="<{$_GET['enddate']}>" name="enddate" class="text" style="width:85px;"/>
+			用户名称:<input type='text' name='username' id="username" value="<{$_GET['username']}>"/>
+			用户手机: <input type='text' name='userphone' id="userphone" value="<{$_GET['userphone']}>"/>
+			 		 
+			<button type="submit" class="btn btn-primary btn-lg" id="search">查询</button>
+			<if condition="$Think.session.role eq 'level_1_admin' ">
+			<div class="btn btn-primary btn-lg" id="exportData">导出数据</div>
+			</if>
+		</div>
+		</form>
+		</br>
+		
+		<table class="table table-hover table-bordered">
+			<tr>
+				<th>排名</th>
+				<th>游戏时间</th>
+				<th>用户头像</th>
+				<th>用户名称</th>
+				<th>用户手机</th>
+				<th>用户成绩</th>
+				<th>状态</th>
+				<if condition="$Think.session.role eq 'level_1_admin' ">
+				
+				<th>操作</th>
+				</if>
+			</tr>
+			<volist name='data' id='vo' key='k'>
+				<tr class="active">
+					<td><{$k}></td>
+					<td><{$vo.joindate}></td>
+					<td>
+					  <if condition="$vo.headimgurl eq '' ">
+					    	<img src="__PUBLIC__/Images/person.gif" style="width:55px;height:50px;"/>
+					    <else /><img src="<{$vo.headimgurl}>" style="width:55px;height:50px;"/>
+					  </if>
+					</td>
+					<td><{$vo.username}></td>
+					<td><{$vo.userphone}></td>
+					<td><{$vo.score}></td>
+					<td>
+					    <if condition="$vo.is_exchange eq 0 ">未申请
+					    <elseif condition="$vo.is_exchange eq 1"/><a href="__APP__/User/exchangeGift/uid/<{$vo.uid}>/gid/<{$vo.id}>">申请中</a>
+					    <else />已兑换
+					    </if>
+					</td>
+					<if condition="$Think.session.role eq 'level_1_admin' ">
+				
+					<td><a href="__APP__/User/modifyScore/id/<{$vo.id}>/uid/<{$vo.uid}>/score/<{$vo.score}>">修改分数</a></td>
+					</if>
+				</tr>
+			</volist>
+
+		</table>
+		
+		</br>
+		<div style="text-align:center;"><{$page}></div>
+
+			</div>
+
+		
+
+</div>
+
+</body>
+
+</html>

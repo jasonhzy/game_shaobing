@@ -1,0 +1,286 @@
+
+<!doctype html>
+<html dir="ltr" lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, width=device-width">
+<meta name="screen-orientation" content="portrait">
+<meta charset="utf-8">
+<title>抓小蜜蜂，赢取iPhone6！-- 排行榜</title>
+<style type="text/css">
+body {
+	font: normal 100% Helvetica, Arial, sans-serif;
+}
+#gameBtns {
+	position:absolute;
+    left:0%;
+    top:0;
+    /*border:1px #f00 solid;*/
+    width:100%;
+    height:100%;
+    text-align:center;
+    background: 
+		url(__PUBLIC__/Images/xiaomifeng/home.png) center 75%
+		no-repeat;
+	background-size: 100% 100%;
+    z-index: 10000;
+}
+#topn-rule {
+	margin: 10px auto 0;
+}
+#startGame,#topn,#gameRule {
+	width: 6em;color: rgb(255, 255, 255); font-size: 1.2em;height:1.7em;line-height:1.7em;display:inline-block;
+    background-color:red;
+}
+
+.gameBtns-wrap {
+	position:absolute;
+    left:0%;
+    bottom:60px;
+    width:100%;
+	display:none;
+    /*border:1px #f00 solid;*/
+}
+.score-result .phb, .score-result .xyyx {
+	width: 6em;color: rgb(255, 255, 255); font-size: 1.2em;height:1.7em;line-height:1.7em;display:inline-block;
+    background-color:red;
+}
+
+.hdgz-layout {
+	position:fixed;
+	left:0;top:0;right:0;bottom:0;display:none;z-index:10001;
+}
+
+.topn-wrap {
+	width:100%;margin-top:10px;
+	margin:0 auto;
+}
+ul {
+	list-style-type:none;
+}
+ul li {
+	display:inline-block;
+	verical-align:middle;
+}
+table.item {
+	width:100%;
+	margin:3px auto 3px;
+	background:url('__PUBLIC__/Images/lucky.png') no-repeat #d9e9f9;
+	/*border:1px #000 solid;*/
+}
+
+img.headimg {
+	width:60px;height:60px;
+}
+td.username {
+	width:75%;font-weight:bolder;
+	text-shadow: 0 1px 1px #fff;
+}
+td.phone {
+	width:25%;text-align:right;
+}
+.phonetex {color:#E03232;font-size:16px;}
+.usernametex {
+	font-weight:bolder;
+    font-size:16px;
+	color:#211717;
+}
+td.index {
+	width:15%;text-align:center;
+	font-weight:bolder;
+    font-size:20px;
+	text-shadow: 0 1px 1px #fff;
+}
+td.head {
+	width:15%;
+}
+
+div.item {
+	width:100%;
+	margin:3px auto 3px;
+	background:#CD9B1D;
+	height:65px;
+	line-height:65px;
+	text-align:center;
+}
+div.item span.txt,span.txt a,span.txt a:hover {
+	color:#DF2D5F;
+	font-weight:bolder;
+	font-size:15px;
+	font-family:Helvetica, Arial, sans-serif;
+	text-decoration:none;
+}
+table.item td.score {
+	font-size:16px;
+}
+table.item img {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border: 1px solid #FFF;
+}
+
+.btns {
+	width:100%;
+	margin:5px auto 5px;
+	text-align:center;
+}
+.backhome {
+	width: 6em;color: rgb(255, 255, 255); font-size: 1.2em;height:1.7em;line-height:1.7em;display:inline-block;
+    background-color:red;
+    border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+
+text-align:center;
+}
+
+.tryagain,.sharefriend {
+	width: 6em;color: rgb(255, 255, 255); font-size: 1.2em;height:1.7em;line-height:1.7em;display:inline-block;
+    background-color:red;
+    border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+
+text-align:center;
+}
+
+.weixin-share {
+	left:0;top:0;
+	background: rgba(0, 0, 0, .8)
+		url(http://p0.qhimg.com/t018a9077b24ae52c14.png) right top no-repeat;
+	background-size: 212px 196px;
+	display: none;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+	z-index: 100
+}
+
+.userbtn {
+	width:5em;color: rgb(255, 255, 255); font-size: 1em;height:1.5em;line-height:1.5em;
+    background-color:red;
+    border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+
+text-align:center;
+margin:0;padding:0;
+}
+</style>
+<load href="__PUBLIC__/Js/jquery-1.5.1.min.js"/>
+<script type="text/javascript">
+var appBase = "__APP__";
+var pos = appBase.lastIndexOf("/");
+var appName = appBase.substring(0,pos);
+
+var mypos = '<{$mypos}>';
+var mygift = '<{$mygift}>';
+var shopList = '<{$shopList}>';
+var cfg_other_shop = '<{$cfg_other_shop}>';
+
+window.shareData = {
+		   "imgUrl": "<{$cfg_wx_share_pic}>",
+		   "timeLineLink": "<{$cfg_wx_share_url}>",
+		   "tTitle": "<{$cfg_wx_share_title}>",
+		   "tContent": "<{$cfg_wx_share_desc}>"
+		};
+
+$(function() {
+	alert("openid=<{$openid}>");
+	
+	$('.backhome').click(function() {
+		window.location.href = '__APP__/Index/index.html';
+		
+	});
+	
+	$('.tryagain').click(function() {
+		window.location.href = '__APP__/Index/index.html';
+	});
+	
+	$('.sharefriend').click(function() {
+		$('.weixin-share').show();
+	});
+	
+	$('.weixin-share').click(function() {
+		$(this).hide();
+	});
+	
+	$('.wylj').click(function() {
+		wyljbox();
+		
+	});
+	
+	
+});
+</script>
+<load href="__PUBLIC__/Js/alert3.js"/>
+<load href="__PUBLIC__/Js/wxShare.js"/>
+</head>
+<body>
+<div class="topn-wrap">
+<div class="item">
+ <span class="txt">
+   <if condition="$mypos eq '' ">
+    <a href="__APP__/Index/index.html"> 您暂无排名，点击加入游戏挑战排名，赢大奖！~</a>
+     <else/> 我的排名位置：<{$mypos}>
+   </if>
+ </span>
+</div>
+
+
+<div class="btns">
+    <div class="tryagain">再玩一次</div>
+    <div class="sharefriend">分享朋友圈</div>
+</div>
+
+<volist name='data' id='vo' key='k'>
+<table class="item">
+<tr>
+  <td class="index"><{$k}></td>
+  <td class="head">
+    <if condition="$vo.headimgurl eq '' ">
+      <img class="headimg" src="__PUBLIC__/Images/person.gif"/>
+    <else/><img class="headimg" src="<{$vo.headimgurl}>"/>
+    </if>
+  </td>
+  <td style="width:70%;">
+    <table style="width:100%">
+      <tr>
+        <td class="username"><span class="usernametex"><{$vo.username}></span></td>
+        <td class="phonoe"><span class="phonetex"><{$vo.userphone}></span></td>
+      </tr>
+      <tr>
+        <td class="score" >抓到<{$vo.score}>只小蜜蜂</td>
+        <td class="phonoe">
+          <if condition="($openid neq '') AND ($vo.wxid eq $openid) ">
+            <if condition="$vo.is_exchange eq 0"><div class="userbtn wylj">我要领奖</div>
+            <elseif condition="$vo.is_exchange eq 1"/><div class="userbtn">申请中</div>
+            <elseif condition="$vo.is_exchange eq 2"/><div class="userbtn">已兑奖</div>
+            <else/>&nbsp;
+            </if>
+    		<else/>
+    		<if condition="$vo.is_exchange eq 0"><div class="userbtn">未申请</div>
+              <elseif condition="$vo.is_exchange eq 1"/><div class="userbtn">申请中</div>
+              <elseif condition="$vo.is_exchange eq 2"/><div class="userbtn">已兑奖</div>
+              <else/>&nbsp;
+            </if>
+    		
+    	  </if>
+    	  
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+</volist>
+
+  <div class="btns">
+    <div class="backhome">返回首页</div>
+  </div>
+</div>
+
+<div class="weixin-share"></div>
+</body>
+</html>

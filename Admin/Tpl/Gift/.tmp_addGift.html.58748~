@@ -1,0 +1,60 @@
+<include file="./Admin/Tpl/Index/header.html"/>			
+
+<include file="./Admin/Tpl/Index/left.html"/>	
+
+
+	<div class="diywap_right">
+
+		<div class="well well-sm">添加礼盒</div>
+
+
+<script>
+			$(function(){
+				$('#save').click(function(){
+					$('form[name="myForm"]').submit();
+				});
+			});
+		</script>
+<form class="form-horizontal" action='__APP__/Box/doAdd' method="post" name="myForm" enctype='multipart/form-data'/>
+
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">礼盒关闭图片:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="catelogo" id="postpic"  name="box_close_pic"  readonly= "true" class="form-control" >
+
+						<iframe src="__APP__/Index/pcupload" height="35" frameborder="0" scrolling="no" width="400" ></iframe>
+
+				 </div>
+
+			</div>
+			
+			<div class="form-group">
+
+			 <label for="catelogo" class="col-sm-2 control-label">礼盒打开图片:</label>
+
+				 <div class="col-sm-4">
+
+					<input type="catelogo" id="postpic1"  name="box_open_pic"  readonly= "true" class="form-control" >
+
+						<iframe src="__APP__/Index/pcupload/pid/postpic1" height="35" frameborder="0" scrolling="no" width="400" ></iframe>
+
+				 </div>
+
+			</div>
+			
+			<button type="submit" class="btn btn-primary btn-lg" id="save">保 存</button>
+
+			</form>
+
+			</div>
+
+			</div>
+	</div>
+
+</body>
+
+</html>

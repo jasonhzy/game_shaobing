@@ -1,0 +1,606 @@
+
+<!doctype html>
+<html dir="ltr" lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, width=device-width">
+<meta name="screen-orientation" content="portrait">
+<meta charset="utf-8">
+<title><{$cfg_homepage_title}></title>
+<load href="__PUBLIC__/Css/game.css"/>
+<style type="text/css">
+/* #gameBtns {
+	position:absolute;
+    left:0%;
+    top:0;
+    width:100%;
+    height:100%;
+    text-align:center;
+    background: 
+		url(__PUBLIC__/Images/shaobing/home.jpg) center bottom no-repeat;
+	background-size: 100% 100%;
+    z-index: 10000;
+	overflow:hidden;
+} */
+.alert2-cover {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.7);
+display: none;
+z-index: 10002;
+}
+
+#gameBtns {
+	position:absolute;
+    /*border:1px #f00 solid;*/
+    width:100%;
+    height:100%;
+	left:0;
+	top:0;
+	z-index: 10000;
+}
+
+
+#prizeAndStartGame {
+	margin: 0 auto 10px;
+}
+#startGame,#myPrize,#gameRule {
+	width: 6em;color: rgb(255, 255, 255); font-size: 1.2em;height:1.7em;line-height:1.7em;display:inline-block;
+    background-color:red;
+    border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border: 1px solid #FFF;
+}
+
+.gameBtns-wrap {
+	position:absolute;
+    left:0%;
+    bottom:60px;
+    width:100%;
+	display:none;
+    text-align:center;
+}
+
+
+.score-result .phb, .score-result .xyyx, .score-result .dklb {
+	width: 6em;color: rgb(255, 255, 255); font-size: 1.2em;height:1.7em;line-height:1.7em;display:inline-block;
+    background-color:red;
+	border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border: 1px solid #FFF;
+}
+
+.hdgz-layout {
+	position:fixed;
+	left:10%;top:10%;right:0;bottom:0;overflow: hidden;
+	display:none;z-index:10001;width:274px;height:274px;
+}
+#hdgz-img {
+	width:274px;height:274px;
+}
+</style>
+<script type="text/javascript">
+var appBase = "__APP__";
+var pos = appBase.lastIndexOf("/");
+var appName = appBase.substring(0,pos);
+
+var cfg_game_end_say = '<{$cfg_game_end_say}>';
+var cfg_wx_share_desc1 = '<{$cfg_wx_share_desc1}>';
+var cfg_wx_share_desc2 = '<{$cfg_wx_share_desc2}>';
+var cfg_game_prize_say = '<{$cfg_game_prize_say}>';
+//var window.gameobj = null;
+
+window.shareData = {
+   "imgUrl": "<{$cfg_wx_share_pic}>",
+   "timeLineLink": "<{$cfg_wx_share_url}>",
+   "tTitle": "<{$cfg_wx_share_title}>",
+   "tContent": "<{$cfg_wx_share_desc}>",
+   "cfg_wx_share_redirect":"<{$cfg_wx_share_redirect}>"
+};
+
+function saveScore(){
+	$.ajax({
+		url : '__APP__/Index/doScoreUpdate',
+		data : {"score":$('#score').html()},
+		type : 'post',
+		dataType:"json",
+		async : false,
+		error : function(ret, error) {
+			alert('返回：' + ret.responseText);
+		},
+		success : function(ret) {
+			if(ret.status=='ok'){
+				//alert('信息提交成功，我们的客服将联系您兑奖！分享让朋友帮忙玩吧！');
+				var succ_msg = ret.congar_msg_xx;
+				if (!succ_msg) {
+					succ_msg = '信息提交成功，我们的客服将联系您兑奖！分享让朋友一起来 挑战吧！~';
+				}
+				// alert(succ_msg);
+				window.shareData.tContent = ret.wx_share_msg;
+				
+				
+			} else {
+				//alert('抱歉，提交失败，再试试吧！');
+				// 调试开始
+				alert('错误：' + ret.refer);
+				// 调试结束
+				
+				
+			}
+			
+		}
+	});
+	
+	
+	
+}
+</script>
+<script>var gConfig={wxDesc:"xx",wxData:{appId:"wx187404dce3656e9d",imgUrl:"http://game.misifu.cn/images/xiaomifeng2.png",link:'http://game.misifu.cn/game/shaobing/index.html',desc:"xx",title:"xx"},activeId:"ac174b",sApi:"http://sehd.360.cn/turntable/base/draw"}</script>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+function setShareCount() {
+	/* $.ajax({
+		url : "__APP__/Index/setShareCount",
+		data : {},
+		dataType : "json",
+		type : "post",
+		success : function(data) {
+			//alert(data.msg);
+		}
+		
+	}); */
+	
+}
+
+wx.config({
+    debug: false,
+    appId: '<{$signPackage["appId"]}>',
+    timestamp: '<{$signPackage["timestamp"]}>',
+    nonceStr: '<{$signPackage["nonceStr"]}>',
+    signature: '<{$signPackage["signature"]}>',
+      jsApiList: [
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'hideOptionMenu',
+        'showOptionMenu'
+		]
+  });
+  
+wx.ready(function () {
+// 在这里调用 API
+	
+	shareFn();
+	
+	
+  });
+  
+  wx.error(function (res) {
+	
+	alert(res.errMsg);
+  });
+  
+  function shareFn(desc,link,title) {
+	  if (!title) {
+		  title = '<{$cfg_wx_share_title}>';
+	  }
+	  if (!desc) {
+		  desc = '<{$cfg_wx_share_desc}>';
+	  }
+	  if (!link) {
+		  link = '<{$cfg_wx_share_url}>?shareId=<{$Think.session.uid}>';
+	  }
+	  
+	  wx.onMenuShareAppMessage({
+	      title: title,
+	      desc: desc,
+	      link: link,
+	      imgUrl: '<{$cfg_wx_share_pic}>',
+	      trigger: function (res) {
+	       	//alert('用户点击发送给朋友');
+	      },
+	      success: function (res) {
+	       	//alert('已分享成功');
+	       	setShareCount();
+	      },
+	      cancel: function (res) {
+	        //alert('已取消');
+	      },
+	      fail: function (res) {
+	       // alert(JSON.stringify(res));
+	      }
+	    });
+		
+		wx.onMenuShareTimeline({
+	      title: desc,
+	      link: link,
+	      imgUrl: '<{$cfg_wx_share_pic}>',
+		  
+	      trigger: function (res) {
+	        // alert('用户点击分享到朋友圈');
+	      },
+	      success: function (res) {
+	          //alert('已分享成功');
+	          setShareCount();
+	      },
+	      cancel: function (res) {
+	       	//alert('已取消分享');
+	      },
+	      fail: function (res) {
+	        //alert(JSON.stringify(res));
+	      }
+	    });
+		
+	}
+</script>
+</head>
+<body>
+<input type="hidden" name="need_login" id="need_login" value="<{$need_login}>"/>
+
+<div id="main">
+    <div id="guidePanel">
+      
+    </div>
+    <div id="gamePanel">
+        <div class="score-wrap">
+            <div class="heart"></div>
+            <span id="score">000000</span>
+        </div>
+
+        <canvas id="stage">
+            <span>Browser does not support the canvas.</span>
+        </canvas>
+        
+        <div id="gameBtns">
+         <img src="__PUBLIC__/Images/shaobing/home.png" width="100%" height="100%"/>
+	     <div class="gameBtns-wrap">
+	        <div id="prizeAndStartGame">
+	          <span id="myPrize">我的奖品</span>
+	          <span id="startGame">开始游戏</span>
+	        </div>
+	        <div id="gameRule">活动规则</div>
+	        
+	     </div>
+        </div>
+    </div>
+
+    <div id="gameoverPanel"></div>
+
+    <div id="resultPanel">
+        <div class="weixin-share"></div>
+        <a href="javascript:void(0)" class="replay">再玩一次</a>
+
+        <div id="scoreBoard" class="panel">
+
+            <div class="score-result score-2">
+                <p class="tips">矮油，成功抓到<span>7</span>支小蜜蜂~</p>
+                <br/>
+                <div class="switch-show" id="scoreNok">
+                  <div class="wrap">
+                    <span class="phb">排行榜</span>&nbsp;&nbsp;
+                    <span class="xyyx">炫耀一下</span>
+                  </div>
+                </div>
+                
+                <div class="switch-show" id="scoreOk">
+                  <div class="wrap">
+                    <div>
+                      <img src="__PUBLIC__/Images/shaobing/gift.jpg" class="giftimg"/>
+                    </div>
+                    <div><span class="dklb">打开礼包</span></div>
+                  </div>
+                </div>
+                
+                <div class="switch-show" id="prizeDiv">
+                  <div class="wrap">
+                    <span class="phb">排行榜</span>&nbsp;&nbsp;
+                    <span class="xyyx">炫耀一下</span>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="javascript" type="text/javascript" src="http://js.users.51.la/17438652.js"></script>
+<noscript><a href="http://www.51.la/?17438652" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/17438652.asp" style="border:none" /></a></noscript>
+
+<load href="__PUBLIC__/Js/shaobing/1102.js"/>
+<load href="__PUBLIC__/Js/shaobing/jquery-md5-1.2.1.js"/>
+
+<load href="__PUBLIC__/Js/shaobing/Game.js"/>
+<load href="__PUBLIC__/Js/shaobing/cookie.js"/>
+<load href="__PUBLIC__/Js/shaobing/iscroll.js"/>
+<load href="__PUBLIC__/Js/shaobing/resource.js"/>
+<load href="__PUBLIC__/Js/shaobing/main.js"/>
+<load href="__PUBLIC__/Js/shaobing/alert2.js"/>
+
+<script type="text/javascript">
+$(function() {
+	//alert($('#need_login').val());
+	//alert("<{$headimgurl}>");  
+	$('.phb').click(function() {
+		$('.topnWrap').show();
+		
+		$.ajax({
+			url : '__APP__/Index/topN',
+			data : {"score":$('#score').html()},
+			type : 'post',
+			dataType:"json",
+			async : false,
+			error : function(ret, error) {
+				alert('返回：' + ret.responseText);
+			},
+			success : function(ret) {
+				if(ret.status=='ok'){
+					var html = '<table>';
+					var data = eval('(' + ret.data + ')');
+					for (var i = 0; i < data.length; i++) {
+						var imgurl;
+						if (data[i].headimgurl !='' && data[i].headimgurl !='/0') {
+							imgurl = data[i].headimgurl;
+						} else {
+							imgurl = '__PUBLIC__/Images/person.gif';
+						}
+						html += '<tr><td class="headimg"><span class="index">&nbsp;&nbsp;&nbsp;' + (i+1) + '.</span><img src="'+imgurl+'"/><div class="name">'+data[i].username+'</div></td><td class="infotext">抢了<span class="num">'+data[i].score+'</span>烧饼</td></tr>'
+						
+					}
+					
+					
+					html += '</table>';
+					
+					$('.topnWrap .tit').html('我的当前排名：' + ret.mypos);
+					$('.topnList').html(html).show();
+				} else {
+					$('.topnWrap .tit').html('暂无排名信息！');
+					$('.topnList').hide();
+				}
+				
+				
+			}
+		});
+		
+		
+		
+	});
+	
+	$('.xyyx').click(function() {
+		//alert('gan');
+		$('.weixin-share').show();
+		//$('.topnWrap').hide();
+	});
+	
+	$('.weixin-share').click(function() {
+		$(this).hide();
+	});
+	
+	$('.share2').click(function() {
+		$('.weixin-share2').show();
+	});
+	
+	$('.weixin-share2').click(function() {
+		$(this).hide();
+	});
+	
+	$('.dklb').click(function() {
+		
+		$.ajax({
+			url : '__APP__/Index/doLottery',
+			data : {"score":$('#score').html()},
+			type : 'post',
+			dataType:"json",
+			async : false,
+			error : function(ret, error) {
+				alert('返回：' + ret.responseText);
+			},
+			success : function(data) {
+				
+				if(data.status=='ok') {
+					$('.switch-show').hide();
+					$('#prizeDiv').show();
+					var strSay = cfg_game_prize_say.replace('(x)',data.gift_name);
+					strSay = strSay.replace('(*)',data.sn_code);
+					$('.tips').html(strSay);
+					
+					// 设置分享描述为奖品
+					var prizeShareDesc = cfg_wx_share_desc2.replace('(x)',data.gift_name);
+					prizeShareDesc = prizeShareDesc.replace('(*)',parseInt($('#score').html()));
+					shareFn(prizeShareDesc);
+					
+				} else if (data.status == 'gameover') {
+                    window.location.href = '__APP__/Index/gameFinish';
+                } else if (data.status == 'prizeNumOut') {
+                	$('.switch-show').hide();
+					$('#prizeDiv').show();
+					$('.tips').html(data.msg);
+                } else if (data.status == 'noprize') {
+                	$('.switch-show').hide();
+					$('#prizeDiv').show();
+					$('.tips').html('不好意思，您没中奖！');
+                } else if (data.status == 'fail') {
+                	alert('抱歉，抽奖失败！');
+                }  else if (data.status == 'ng') {
+                	alert(data.msg);
+                }
+				
+			}
+		});
+		
+	});
+	
+	
+	/* $('.tryagain').click(function() {
+		alert(b);
+		b.init();
+		b.start();
+		$("#windowlogin").hide();
+	}); */
+	
+});
+</script>
+<script type="text/javascript">
+function notice(){
+	$('#ruleDiv').hide();
+}
+
+$(function() {
+	$("#gameRule").click(function() {
+		var screenWidth = $(window).width();
+		var screenHeight = $(window).height();
+		var offetLeft = (screenWidth - $('#ruleDiv').width()) / 2;
+		var offetTop = (screenHeight - $('#ruleDiv').height()) / 2 - 5;
+		
+		$('#ruleDiv').css("left", offetLeft).css("top",offetTop).show();
+	});
+	
+	$('#ruleDiv').click(function() {
+		$(this).hide();
+	});
+	
+	$("#myPrize").click(function() {
+		var screenWidth = $(window).width();
+		var screenHeight = $(window).height();
+		var offetLeft = (screenWidth - $('#giftDiv').width()) / 2;
+		var offetTop = (screenHeight - $('#giftDiv').height()) / 2 - 5;
+		
+		$('#giftDiv').css("left", offetLeft).css("top",offetTop).show();
+		
+		$.ajax({
+			url : '__APP__/Index/loadMyGift',
+			data : {},
+			type : 'post',
+			dataType:"json",
+			async : false,
+			error : function(ret, error) {
+				alert('加载我的礼品失败，返回：' + ret.responseText);
+			},
+			success : function(ret) {
+				var html = '';
+				//alert(ret.status);
+				if(ret.status == 'ok'){
+					var data = eval('(' + ret.data + ')');
+					html += '<tr><th>序号</th><th>奖品名称</th><th>SN码</th><th>中奖日期</th><th>兑奖状态</th></tr>';
+					for (var i = 0; i < data.length; i++) {
+						var stat = '';
+						if (data[i].stat == 0) {
+							stat = '未兑奖';
+						} else {
+							stat = '已兑奖';
+						}
+						
+						html += '<tr><td>'+ (i+1) +'</td><td>' + data[i].gift_name + '</td><td>'+ data[i].sn_code + '</td><td>'+ data[i].lottery_date +'</td><td>' + stat + '</td></tr>';
+					}
+					
+					$('.gifttab').html(html).show();
+					$('#nogift').hide();
+				} else {
+					
+					html += ret.msg;
+					$('#nogift').html(html).show();
+					$('.gifttab').hide();
+				}
+				
+				
+			}
+		});
+		
+		
+		
+	});
+	
+	$('#giftDiv').click(function() {
+		$(this).hide();
+	});
+	
+});
+</script>
+
+<div class="notice" id="ruleDiv">
+<div style="padding:10px;line-height:24px;">
+  <span>活动规则</span><a href="javascript:void(0)"><img src="__PUBLIC__/Images/close.jpg" onClick="notice()"></a>
+	<br/>
+	<br/>
+	<{$cfg_game_rule}>
+
+  </div>
+</div>
+
+<div class="giftlist" id="giftDiv">
+<div style="padding:10px;line-height:24px;height: 100%;overflow: scroll;">
+  <span>我的奖品</span><a href="javascript:void(0)"><img src="__PUBLIC__/Images/close.jpg"></a>
+	<br/>
+	<br/>
+	<div>
+	<div id="nogift" style="width:100%;text-align: center;"></div>
+	<table class="gifttab">
+	  <!-- <tr>
+	    <th>序号</th>
+	    <th>奖品名称</th>
+	    <th>SN码</th>
+	    <th>中奖日期</th>
+	    <th>兑奖状态</th>
+	  </tr>
+	  <tr>
+	    <td>序号</td>
+	    <td>奖品名称</td>
+	    <td>SN码</td>
+	    <td>中奖日期</td>
+	    <td>兑奖状态</td>
+	  </tr> -->
+	  
+	</table>
+	</div>
+
+  </div>
+</div>
+
+
+<div class="alert2-cover"></div>
+
+<!-- topN -->
+<div class="topnWrap" style="display: none;">
+<div class="tit">
+ <span>我当前的排名：xx</span>
+</div>
+<div class="btns" style="text-align: center;">
+ <span class="tryagain">再玩一次</span>
+ <span class="share2">炫耀一下</span>
+</div>
+<div class="topnList">
+<table style="display: none;">
+  <tr>
+    <td class="headimg">
+      <span class="index">1.</span>
+      <img src="__PUBLIC__/Images/person.gif"/>
+      <div class="name">DANIS哥ge</div>
+    </td>
+    <td class="infotext">圣诞<span class="num">56</span>的刻录</td>
+  </tr>
+  
+</table>
+<table style="display: none;">
+  <tr>
+    <td class="headimg">
+      <span class="index">1.</span>
+      <img src="__PUBLIC__/Images/person.gif"/>
+      <div class="name">DANIS哥ge</div>
+    </td>
+    <td class="infotext">圣诞节丰盛<span class="num">56</span>的刻录</td>
+  </tr>
+  
+</table>
+</div>
+
+</div>
+<!-- topN -->
+<div class="weixin-share2" style="display: none;"></div>
+</body>
+</html>
