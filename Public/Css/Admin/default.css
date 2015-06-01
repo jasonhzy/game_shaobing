@@ -5,8 +5,8 @@
    
 body{margin:0;height:100%} asyncui{display:block} .asyncbox{position:absolute;font:12px Tahoma,sans-serif}
 
-ab_skins{background:url(default/default_bg.gif)}
-ab_skins ul{background:url(default/default_tb.gif)}
+/**ab_skins{background:url(default/default_bg.gif)}
+ab_skins ul{background:url(default/default_tb.gif)}**/
 
 ab_clone{border:1px dotted #666}
 table.ab_outer{width:auto;height:auto;border-collapse:collaps}
