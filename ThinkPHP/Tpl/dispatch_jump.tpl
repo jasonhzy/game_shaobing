@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>跳转提示</title>
-<link rel="shortcut icon" href="/favicon.ico?v=5" />
+<link rel="shortcut icon" href="/games/favicon.ico" />
 <style type="text/css">
 *{ padding: 0; margin: 0; }
 body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16px; }
