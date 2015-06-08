@@ -570,19 +570,16 @@ class IndexAction extends CommonAction {
     		echo json_encode(array('status'=>'ng','msg'=>'非法操作！'));
     		exit;
     	}
-    	
     	$score = $_POST['score'];
     	if (!empty($score)) {
     		$score = (integer)$score;
     	} else {
     		$score = 0;
     	}
-    	
     	if ($score <= 0) {
     		echo json_encode(array('status'=>'-1'));
     		exit;
     	}
-    	
     	
     	$score_array['uid']=$_SESSION['uid'];
     	$score_array['score']=$score;
@@ -602,14 +599,10 @@ class IndexAction extends CommonAction {
     			} else {
     				$lastId = 1;
     			}
-    			
     		} else {
     			$lastId = $m->add($score_array);
     		}
-    		
     	}
-    	
-    	
     	if(!$lastId){
     		echo json_encode(array('status'=>'ng'));
     		exit;
@@ -623,7 +616,6 @@ class IndexAction extends CommonAction {
     	} else {
     		echo json_encode(array('status'=>'0'));
     	}
-    	
     	exit;
     }
     

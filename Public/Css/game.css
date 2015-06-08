@@ -561,16 +561,17 @@ keyframes fire { 0%{
 }
 #scoreNok .wrap,#prizeDiv .wrap {
 	position: absolute;
-    top: 45%;
+    top: 40%;
 	width:100%;
 	text-align: center;
 }
 .giftimg {
 	width: 240px;
-	height: 246px;
+	height: 208px;
 }
 #scoreOk {
 	/*border: 1px #eee solid;*/
+	overflow:scroll;
 }
 #scoreOk .wrap {
 	position: absolute;
