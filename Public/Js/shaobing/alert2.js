@@ -248,7 +248,7 @@ $("#loginbutton").click(function () {
 		dataType : "json",
 		async : false,
 		error : function(ret, error) {
-			alert(ret.responseText);
+			//alert(ret.responseText);
 		},
 		success : function(ret) {
 			if(ret.status=='ok'){
@@ -258,10 +258,8 @@ $("#loginbutton").click(function () {
 				//init();
 				$('#need_login').val('0');
 			}else{
-				
 				document.getElementById("err_msg").innerHTML=ret.message;
 				return;
-				
 			}
 		}
 		});
