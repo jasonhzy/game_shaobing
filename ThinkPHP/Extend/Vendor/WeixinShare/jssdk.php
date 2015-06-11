@@ -57,6 +57,7 @@ class JSSDK {
   			$json = json_decode(file_get_contents($file));
 		    $ticket = isset($json->jsapi_ticket) ? $json->jsapi_ticket : '';
 	}else{
+			if(file_exists($file)) unlink($file);
 			exec('/usr/bin/curl -L http://fenxiao.pinet.cc/m?games_jsapi=1', $back, $bFlag);
 			if (!$bFlag) {
 				$ticket = $this->get_jsapi_ticket($file);
