@@ -38,8 +38,32 @@ class JSSDK {
     }
     return $str;
   }
+  
+  function get_jsapi_ticket($file = ''){
+  		if (file_exists($file)) {
+  			$param = json_decode(file_get_contents($file));
+			$ticket = isset($json->jsapi_ticket) ?$json->jsapi_ticket : '';
+			if (!$ticket) {
+				$this->get_jsapi_ticket($file);
+			}
+			return $ticket;
+  		}
+  }
 
   private function getJsApiTicket() {
+  	$file = RUNTIME_PATH.'jsapi_ticket';
+  	$ticket = '';
+  	if(file_exists($file)&& (mktime() - filemtime($file) < 7050)){
+  			$json = json_decode(file_get_contents($file));
+		    $ticket = isset($json->jsapi_ticket) ? $json->jsapi_ticket : '';
+	}else{
+			exec('/usr/bin/curl -L http://fenxiao.pinet.cc/m?games_jsapi=1', $back, $bFlag);
+			if (!$bFlag) {
+				$ticket = $this->get_jsapi_ticket($file);
+			}
+	}
+  	return $ticket;
+  	die;
     // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
     $data = json_decode(file_get_contents(RUNTIME_PATH."jsapi_ticket.json"));
     if ($data->expire_time < time()) {
