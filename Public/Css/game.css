@@ -225,7 +225,7 @@ keyframes fire { 0%{
 
 #resultPanel .weixin-share {
 	background: rgba(0, 0, 0, .8)
-		url(http://p0.qhimg.com/t018a9077b24ae52c14.png) right top no-repeat;
+		url(../Images/shaobing/share.png) right top no-repeat;
 	background-size: 212px 196px;
 	display: none;
 	height: 100%;
@@ -674,7 +674,7 @@ span.index {
 	left:0;
 	top:0;
 	background: rgba(0, 0, 0, .8)
-		url(http://p0.qhimg.com/t018a9077b24ae52c14.png) right top no-repeat;
+		url(../Images/shaobing/share.png) right top no-repeat;
 	background-size: 212px 196px;
 	display: none;
 	height: 100%;
