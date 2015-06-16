@@ -35,14 +35,26 @@ class IndexAction extends CommonAction {
 	
 		// 判断用户当日抽奖次数是否用完
 		$currDate = date("Y-m-d");
-		$prizeCount = $Lottery->where("uid=".$_SESSION['uid']." AND lottery_date >= '".$currDate." 00:00:00' AND lottery_date <= '".$currDate." 23:59:59'")->count();
+		// 20150616  wayhu danis
+		//$prizeCount = $Lottery->where("uid=".$_SESSION['uid']." AND lottery_date >= '".$currDate." 00:00:00' AND lottery_date <= '".$currDate." 23:59:59'")->count();
+		$prizeCount = $Lottery->where("uid=".$_SESSION['uid'])->count();
+		
 		$Config = M('Config');
 		$prizeNum = $Config->where("varname='cfg_personal_prize_num'")->getField('value');
+		
+		//$cfg_personal_prize_out = $Config->where("varname='cfg_personal_prize_out'")->getField('value');
+		
 		if (intval($prizeCount) >= intval($prizeNum)) {
-			$cfg_personal_prize_out = $Config->where("varname='cfg_personal_prize_out'")->getField('value');
-			echo json_encode(array('status'=>'prizeNumOut','msg'=>$cfg_personal_prize_out));
+			echo json_encode(array('status'=>'noprize'));
 			exit;
 		}
+		
+		/* if (intval($prizeCount) >= intval($prizeNum)) {
+			
+			echo json_encode(array('status'=>'prizeNumOut','msg'=>$cfg_personal_prize_out));
+			exit;
+		} */
+		// 20150616  wayhu danis end
 		
 		
 		//抽奖逻辑，一个用户最多只能抽中一个奖品
