@@ -25,6 +25,7 @@ class IndexAction extends CommonAction {
 			echo json_encode(array('status'=>'ng','msg'=>'非法操作！'));
 			exit;
 		}
+		$score = $_POST['score'];
 		
 		$Lottery = M('Lottery');
 		$is_get_prize = true; // 是否有中奖
@@ -59,7 +60,8 @@ class IndexAction extends CommonAction {
 		// 查找用户可以抢的机型
 		$sqlStr = "SELECT a.id,a.gift_name,a.gift_num,a.chance_value,(a.gift_num-IFNULL(b.usednum,0)) AS leastnum FROM tp_gift a
 				LEFT JOIN (SELECT gid,COUNT(*) AS usednum FROM tp_lottery GROUP BY gid) b
-				ON a.id=b.gid WHERE (a.gift_num-IFNULL(b.usednum,0)) > 0 AND a.prize_num < a.day_num";
+				ON a.id=b.gid WHERE (a.gift_num-IFNULL(b.usednum,0)) > 0 AND a.prize_num < a.day_num ".
+		"AND a.`score_low` <= ".$score." AND a.`score_high` >= ".$score;
 		$gift_data = $Lottery->query($sqlStr);
 			
 		if($gift_data!=null){
@@ -568,19 +570,16 @@ class IndexAction extends CommonAction {
     		echo json_encode(array('status'=>'ng','msg'=>'非法操作！'));
     		exit;
     	}
-    	
     	$score = $_POST['score'];
     	if (!empty($score)) {
     		$score = (integer)$score;
     	} else {
     		$score = 0;
     	}
-    	
     	if ($score <= 0) {
     		echo json_encode(array('status'=>'-1'));
     		exit;
     	}
-    	
     	
     	$score_array['uid']=$_SESSION['uid'];
     	$score_array['score']=$score;
@@ -600,14 +599,10 @@ class IndexAction extends CommonAction {
     			} else {
     				$lastId = 1;
     			}
-    			
     		} else {
     			$lastId = $m->add($score_array);
     		}
-    		
     	}
-    	
-    	
     	if(!$lastId){
     		echo json_encode(array('status'=>'ng'));
     		exit;
@@ -621,7 +616,6 @@ class IndexAction extends CommonAction {
     	} else {
     		echo json_encode(array('status'=>'0'));
     	}
-    	
     	exit;
     }
     
