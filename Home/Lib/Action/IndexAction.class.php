@@ -666,5 +666,104 @@ class IndexAction extends CommonAction {
     			//if(strlen($tmpstr)< $strlen ) $tmpstr.= "...";
     			return $tmpstr;
     	}
-    	}
+    }
+    	
+    public function rank() {
+		// 调试用开始
+		// 调试用结束
+		$isGameEnd = $this->isGameEnd();
+		$this->assign('isGameEnd', $isGameEnd);
+		
+		$Config = M('Config');
+		$cfg_topn_num = $Config->where("varname='cfg_topn_num'")->getField('value');
+		if (!$cfg_topn_num || empty($cfg_topn_num)) {
+			$cfg_topn_num = 50;
+		}
+		
+		$sql = "select u.id as uid,u.username as username,u.userphone as userphone,u.is_exchange as is_exchange,
+				s.id as id,s.score as score,s.joindate as joindate,u.headimgurl as headimgurl,u.wxid as wxid 
+				from tp_user u join tp_score s on u.id=s.uid order by score desc limit ".$cfg_topn_num;
+				
+		
+		$result = $Config->query($sql);
+		
+		$hasTopn = 0;
+		if ($result && count($result) > 0) {
+			$hasTopn = 1;
+			
+			foreach ($result as $row) {
+				if (!empty($row['userphone']) && $row['userphone'] != 'none') {
+					$row['userphone'] = substr_replace($row['userphone'],'****',3,4);
+				} else {
+					$row['userphone'] = '未填写';
+				}
+				
+				$data[] = $row;
+			}
+			$this->assign("data", $data);
+			
+			$cookieName = "xiaomifengCookie";
+			$xmfCookie = $_COOKIE[$cookieName];
+			
+			if ($xmfCookie != "") { // 用户玩过该游戏才可能存在cookie，非首次体验
+				$xmfCookie = stripslashes($xmfCookie);
+				//echo $xmfCookie;
+				//exit;
+				$cookieInfo = json_decode($xmfCookie, true);
+				//echo var_dump($cookieInfo);
+				//exit;
+				$openid = $cookieInfo["openid"];
+				
+				if (!empty($openid)) {
+					$pos = 0;
+					foreach($data as $row) {
+						$pos++;
+						if ($row['wxid'] == $openid) {
+							
+							$this->assign("mypos", $pos);
+						}	
+							
+					}
+					
+					$this->assign("openid", $openid);
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		//获取微信分享图片，分享标题，分享描述，分享URL
+		$cfg_wx_share_title = $Config->where("varname='cfg_wx_share_title'")->getField('value');
+		$this->assign('cfg_wx_share_title',$cfg_wx_share_title);
+		
+		$cfg_wx_share_desc = $Config->where("varname='cfg_wx_share_desc'")->getField('value');
+		$this->assign('cfg_wx_share_desc',$cfg_wx_share_desc);
+		
+		$cfg_wx_share_pic = $Config->where("varname='cfg_wx_share_pic'")->getField('value');
+		$this->assign('cfg_wx_share_pic',$cfg_wx_share_pic);
+		
+		$cfg_wx_share_url = $Config->where("varname='cfg_wx_share_url'")->getField('value');
+		$this->assign('cfg_wx_share_url',$cfg_wx_share_url);
+		
+		$cfg_wx_share_redirect = $Config->where("varname='cfg_wx_share_redirect'")->getField('value');
+		$this->assign('cfg_wx_share_redirect',$cfg_wx_share_redirect);
+		
+		
+		// 获取分享的签名 开始
+		$cfg_appid = $Config->where("varname='cfg_appid'")->getField('value');
+		$cfg_screct = $Config->where("varname='cfg_screct'")->getField('value');
+		
+		vendor("WeixinShare.jssdk");
+		$jssdk = new JSSDK($cfg_appid, $cfg_screct);
+		$signPackage = $jssdk->GetSignPackage();
+		$this->assign('signPackage',$signPackage);
+		// 获取分享的签名 结束
+		
+		
+		
+		$this->display();
+	}
+	
 }
